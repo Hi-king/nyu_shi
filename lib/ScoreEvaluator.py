@@ -2,24 +2,35 @@ __author__ = 'hiking'
 __email__ = 'hikingko1@gmail.com'
 import urllib2
 from BeautifulSoup import BeautifulSoup
+from Vectorizer import JapaneseVectorizer
 
 class ScoreEvaluator:
-    @staticmethod
-    def evaluate(queries):
+    @classmethod
+    def evaluate(cls, sentence):
         """
-        :type inputstr: str
+        :type sentence: str
         """
-        print queries
+        return cls._evaluate(JapaneseVectorizer.vectorize(sentence))
 
-class WikipediaScoreEvaluator(ScoreEvaluator):
-    @staticmethod
-    def evaluate(queries):
+    @classmethod
+    def _evaluate(cls, queries):
         """
         :type queries: [str]
         """
+        return 0
+
+class WikipediaScoreEvaluator(ScoreEvaluator):
+    @classmethod
+    def _evaluate(cls, queries):
+        """
+        :type queries: [str]
+        """
+        print "queries=", queries
         query = "+".join(queries)
-        hoge = "http://ja.wikipedia.org/w/index.php?fulltext=Search&search=%s" % query
-        page = urllib2.urlopen(hoge)
+        #url = "http://ja.wikipedia.org/w/index.php?fulltext=Search&search=%s" % query.encode('utf-8')
+        url = "http://ja.wikipedia.org/w/index.php?fulltext=Search&search=%s" % query
+        print url
+        page = urllib2.urlopen(url)
         soup = BeautifulSoup(page)
 
         try:
@@ -27,3 +38,5 @@ class WikipediaScoreEvaluator(ScoreEvaluator):
             return int("".join(countstr.split(",")))
         except AttributeError:
             return 0
+
+

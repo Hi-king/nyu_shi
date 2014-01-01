@@ -9,4 +9,4 @@ class JapaneseVectorizerTestCase(unittest.TestCase):
         """名詞を抽出することの確認
         """
         tokens = JapaneseVectorizer.vectorize("イギリスの首都はロンドン")
-        self.assertListEqual(tokens, [u"イギリス", u"首都", u"ロンドン"])
+        self.assertListEqual(tokens, ["イギリス", "首都", "ロンドン"])

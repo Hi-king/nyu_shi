@@ -27,4 +27,5 @@ class JapaneseVectorizer(Vectorizer):
         for word in words:
             print word.find("pos").contents[0] == u"名詞"
         nouns = [word for word in words if word.find("pos").contents[0] == u"名詞"]
-        return [noun.find("surface").contents[0] for noun in nouns]
+        print "nouns=", nouns
+        return [noun.find("surface").contents[0].encode('utf-8') for noun in nouns]
