@@ -10,6 +10,7 @@ script_path = script_path if len(script_path) else "."
 sys.path.append(script_path+"/..")
 from lib import JapaneseVectorizer
 from lib import WikipediaScoreEvaluator
+from lib import BingScoreEvaluator
 
 def _argparser(rawarglist):
     try:
@@ -34,10 +35,14 @@ def main(description, options):
     """
     description_token = JapaneseVectorizer.vectorize(description)
     print description_token
+    description_token = [token for token in description_token if token != "選択肢"]
 
-    scores = [WikipediaScoreEvaluator._evaluate(description_token + JapaneseVectorizer.vectorize(option)) for option in options]
+    scores = [float(BingScoreEvaluator._evaluate(description_token + [option])) / BingScoreEvaluator._evaluate([option]) for option in options]
+    #scores = [BingScoreEvaluator._evaluate(description_token + JapaneseVectorizer.vectorize(option)) for option in options]
+    #scores = [WikipediaScoreEvaluator._evaluate(description_token + JapaneseVectorizer.vectorize(option)) for option in options]
     print scores
     ansindex = argmax(scores)
+    print "answer:", options[ansindex]
     return options[ansindex]
 
 if __name__ == '__main__':
