@@ -34,16 +34,23 @@ class YearDetector(object):
 
     @classmethod
     def detect(cls, queries):
+        for query in queries:
+            print query
+            #print query.decode()
         query = "+".join(queries)
         url = "http://ja.wikipedia.org/w/index.php?fulltext=Search&search=%s" % query
+        print url
         page = urllib2.urlopen(url)
         soup = BeautifulSoup(page)
-        soup = soup.find('ul', {"class": "mw-search-results"})
-        soup = soup.findAll('li')
-        years = []
-        for i in xrange(cls.LIMIT_RANK):
-            link = soup[i].find("a")["href"]
-            years += cls._extract_years(link)
-        print years
-        print numpy.median(years)
-        return numpy.median(years)
+        try:
+            soup = soup.find('ul', {"class": "mw-search-results"})
+            soup = soup.findAll('li')
+            years = []
+            for i in xrange(cls.LIMIT_RANK):
+                link = soup[i].find("a")["href"]
+                years += cls._extract_years(link)
+            print years
+            print numpy.median(years)
+            return numpy.median(years)
+        except AttributeError:
+            raise ValueError
