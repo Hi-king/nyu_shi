@@ -24,8 +24,18 @@ class JapaneseVectorizer(Vectorizer):
         page = urllib2.urlopen(url)
         soup = BeautifulSoup(page)
         words = soup.find("word_list").findAll("word")
-        for word in words:
-            print word.find("pos").contents[0] == u"名詞"
-        nouns = [word for word in words if word.find("pos").contents[0] == u"名詞"]
-        print "nouns=", nouns
-        return [noun.find("surface").contents[0].encode('utf-8') for noun in nouns]
+
+        nouns = []
+        #名詞だけを抽出
+        for i in xrange(len(words)):
+            if words[i].find("pos").contents[0] != u"名詞":
+                continue
+            #複合名詞は一つにする
+            if nouns and words[i-1].find("pos").contents[0] == u"名詞":
+                nouns[-1] += words[i].find("surface").contents[0].encode('utf-8')
+            else:
+                nouns.append(words[i].find("surface").contents[0].encode('utf-8'))
+
+        #nouns = [word for word in words if word.find("pos").contents[0] == u"名詞"]
+        #print "nouns=", nouns
+        return nouns
